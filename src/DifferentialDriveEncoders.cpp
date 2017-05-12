@@ -31,13 +31,11 @@ void DifferentialDriveEncoders::Start()
         {
             while(m_keepThreadAlive)
             {
-                m_mutex.lock();
+                std::lock_guard<std::mutex> lock(m_mutex);
 
                 m_timeNow = ros::Time::now();
                 m_leftWheel.DoReading(m_timeNow);
                 m_rightWheel.DoReading(m_timeNow);
-
-                m_mutex.unlock();
             }
         });
 }
@@ -45,7 +43,7 @@ void DifferentialDriveEncoders::Start()
 
 robot_wheel_speeds::WheelVelocities DifferentialDriveEncoders::GetVelocities() const
 {
-    m_mutex.lock();
+    std::lock_guard<std::mutex> lock(m_mutex);
 
     robot_wheel_speeds::WheelVelocities msg;
 
@@ -54,8 +52,6 @@ robot_wheel_speeds::WheelVelocities DifferentialDriveEncoders::GetVelocities() c
     msg.left = m_leftWheel.GetVelocity();
     msg.right = m_rightWheel.GetVelocity();
     msg.velocity = calculateUnicycleVelocites(msg.left, msg.right);
-
-    m_mutex.unlock();
 
     return msg;
 }
