@@ -54,8 +54,8 @@ robot_wheel_speeds::WheelVelocities DifferentialDriveEncoders::GetVelocities() c
     msg.right = m_rightWheel.GetVelocity();
     msg.velocity = calculateUnicycleVelocites(msg.left, msg.right);
 
-    ROS_INFO("GetVelocities { left:%d, right:%d, lin: %d, ang:%d }",
-             msg.left, msg.right, msg.velocity.linear.x, msg.velocity.angular.z);
+    ROS_DEBUG("GetVelocities { left:%f, right:%f, lin: %f, ang:%f }",
+              msg.left, msg.right, msg.velocity.linear.x, msg.velocity.angular.z);
 
     return msg;
 }

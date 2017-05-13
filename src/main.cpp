@@ -10,8 +10,8 @@ int main(int argc, char *argv[])
     ros::Duration velocityUpdateInterval(0, velocityUpdateIntervalNs);
     int leftPinA = 17;
     int leftPinB = 18;
-    int rightPinA = 22;
-    int rightPinB = 23;
+    int rightPinA = 23;
+    int rightPinB = 22;
     int ticksPerRevolution = 300;
     int wheelDiameterMm = 60;
     int wheelAxisMm = 70;
