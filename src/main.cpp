@@ -7,7 +7,7 @@
 int main(int argc, char *argv[])
 {
     ros::init(argc, argv, "robot_wheel_speeds");
-    wiringPiSetupGpio();
+    wiringPiSetupSys();
 
     ros::NodeHandle nodeHandle;
 
@@ -21,16 +21,19 @@ int main(int argc, char *argv[])
     ros::Duration velocityUpdateInterval(0, velocityUpdateIntervalNs);
     int leftPinA = 17;
     int leftPinB = 18;
-    int rightPinA = 19;
-    int rightPinB = 20;
+    int rightPinA = 22;
+    int rightPinB = 23;
     int ticksPerRevolution = 300;
-    int wheelDiameterMm = 50;
+    int wheelDiameterMm = 60;
     int wheelAxisMm = 70;
 
+    ROS_INFO("Starting wheel_speeds");
     DifferentialDriveEncoders encoders(leftPinA, leftPinB, rightPinA, rightPinB,
                                        ticksPerRevolution, wheelDiameterMm, wheelAxisMm,
                                        velocityUpdateInterval);
 
+    encoders.Start();
+    ROS_INFO("Encoders started");
     int seq = 1;
     while(ros::ok())
     {
