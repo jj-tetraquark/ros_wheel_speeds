@@ -48,7 +48,6 @@ void WheelEncoder::MaybeUpdateVelocity(const ros::Time& timenow)
 
     if (dt > m_velocityUpdateInterval)
     {
-        ROS_INFO("Updating velocity. Ticks: %d", m_ticks);
         UpdateVelocity(dt);
         m_lastUpdateTime = timenow;
     }
@@ -58,6 +57,6 @@ void WheelEncoder::MaybeUpdateVelocity(const ros::Time& timenow)
 void WheelEncoder::UpdateVelocity(const ros::Duration& dt)
 {
     float distance = float(m_ticks)/m_ticksPerRevolution * (m_wheelCircumference/1000.0); //mm to m
-    m_velocity = distance / dt.toSec();
+    m_velocity = distance / dt.toSec() * m_direction;
     m_ticks = 0;
 }
