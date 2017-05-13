@@ -1,4 +1,4 @@
 Header header
-int64 left
-int64 right
+float32 left
+float32 right
 geometry_msgs/Twist velocity
