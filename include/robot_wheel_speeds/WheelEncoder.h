@@ -29,7 +29,7 @@ private:
     int                 m_prevValueA;
     ros::Time           m_lastUpdateTime;
     int                 m_direction;
-    int                 m_ticks;
+    std::atomic_int     m_ticks;
     std::atomic<float>  m_velocity;
 };
 
