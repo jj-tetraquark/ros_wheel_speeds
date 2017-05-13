@@ -29,6 +29,7 @@ void DifferentialDriveEncoders::Start()
     m_encoderPollingThread = std::thread(
         [this]()
         {
+            ROS_INFO("Starting polling thread");
             while(m_keepThreadAlive)
             {
                 std::lock_guard<std::mutex> lock(m_mutex);
@@ -52,6 +53,9 @@ robot_wheel_speeds::WheelVelocities DifferentialDriveEncoders::GetVelocities() c
     msg.left = m_leftWheel.GetVelocity();
     msg.right = m_rightWheel.GetVelocity();
     msg.velocity = calculateUnicycleVelocites(msg.left, msg.right);
+
+    ROS_INFO("GetVelocities { left:%d, right:%d, lin: %d, ang:%d }",
+             msg.left, msg.right, msg.velocity.linear.x, msg.velocity.angular.z);
 
     return msg;
 }

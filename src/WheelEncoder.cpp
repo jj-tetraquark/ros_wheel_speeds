@@ -33,18 +33,25 @@ void WheelEncoder::DoReading(const ros::Time& timenow)
         m_direction = (valueB == HIGH) ? 1 : -1;
         m_ticks++;
     }
+    MaybeUpdateVelocity(timenow);
     m_prevValueA = valueA;
 }
 
 void WheelEncoder::MaybeUpdateVelocity(const ros::Time& timenow)
 {
-    auto dt = m_lastUpdateTime - timenow;
-    if (m_lastUpdateTime.isValid() &&
-        dt > m_velocityUpdateInterval)
+    if (m_lastUpdateTime.isZero())
     {
-        UpdateVelocity(dt);
+        m_lastUpdateTime = timenow;
+        return;
     }
-    m_lastUpdateTime = timenow;
+    auto dt = timenow - m_lastUpdateTime;
+
+    if (dt > m_velocityUpdateInterval)
+    {
+        ROS_INFO("Updating velocity. Ticks: %d", m_ticks);
+        UpdateVelocity(dt);
+        m_lastUpdateTime = timenow;
+    }
 }
 
 
@@ -52,4 +59,5 @@ void WheelEncoder::UpdateVelocity(const ros::Duration& dt)
 {
     float distance = float(m_ticks)/m_ticksPerRevolution * (m_wheelCircumference/1000.0); //mm to m
     m_velocity = distance / dt.toSec();
+    m_ticks = 0;
 }
