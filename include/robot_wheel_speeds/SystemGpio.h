@@ -1,59 +1,19 @@
+#pragma once
+#include <wiringPi.h>
+#include <vector>
+
 class SystemGPIO
 {
 public:
-    SystemGPIO(const std::vector<int>& pins)
-        : m_pins(pins)
-    {
-        for (const int pin : m_pins)
-        {
-            if (!SetupPin(pin))
-            {
-                std::cerr << "Couldn't set up pin " << pin << std::endl;
-            }
-        }
-        wiringPiSetupSys();
-    }
+    SystemGPIO(const std::vector<int>& pins);
 
-    ~SystemGPIO()
-    {
-        for (const int pin : m_pins)
-        {
-            if(!TearDownPin(pin))
-            {
-                std::cerr << "Couldn't tear down pin " << pin << std::endl;
-            }
-        }
-    }
+    ~SystemGPIO();
 
 private:
-    bool SetupPin(int pin)
-    {
-        std::ofstream exp("/sys/class/gpio/export");
-        if (exp.good())
-        {
-            exp << std::to_string(pin).c_str();
-            exp.close();
+    bool SetupPin(int pin);
 
-            std::string poll = "/sys/class/gpio/gpio" + std::to_string(pin) + "/direction";
-            while (access(poll.c_str(), W_OK) != 0)
-            {
-                usleep(1);
-            }
-            return true;
-        }
-        return false;
-    }
+    bool TearDownPin(int pin);
 
-    bool TearDownPin(int pin)
-    {
-        std::ofstream unexp("/sys/class/gpio/unexport");
-        if (unexp.good())
-        {
-            unexp << std::to_string(pin).c_str();
-            return true;
-        }
-        return false;
-    }
 
     std::vector<int> m_pins;
 };

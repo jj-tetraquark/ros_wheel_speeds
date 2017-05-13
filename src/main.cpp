@@ -1,21 +1,10 @@
 #include <ros/ros.h>
-#include <wiringPi.h>
 
 #include "robot_wheel_speeds/DifferentialDriveEncoders.h"
-
+#include "robot_wheel_speeds/SystemGpio.h"
 
 int main(int argc, char *argv[])
 {
-    ros::init(argc, argv, "robot_wheel_speeds");
-    wiringPiSetupSys();
-
-    ros::NodeHandle nodeHandle;
-
-    auto publisher = nodeHandle.advertise<robot_wheel_speeds::WheelVelocities>(
-                        "wheel_speeds", 10);
-
-    ros::Rate loop_rate(20);
-
     // Config
     int velocityUpdateIntervalNs = 2e7;
     ros::Duration velocityUpdateInterval(0, velocityUpdateIntervalNs);
@@ -26,6 +15,17 @@ int main(int argc, char *argv[])
     int ticksPerRevolution = 300;
     int wheelDiameterMm = 60;
     int wheelAxisMm = 70;
+
+
+    ros::init(argc, argv, "robot_wheel_speeds");
+    SystemGPIO gpio({leftPinA, leftPinB, rightPinA, rightPinB});
+
+    ros::NodeHandle nodeHandle;
+
+    auto publisher = nodeHandle.advertise<robot_wheel_speeds::WheelVelocities>(
+                        "wheel_speeds", 10);
+
+    ros::Rate loop_rate(20);
 
     ROS_INFO("Starting wheel_speeds");
     DifferentialDriveEncoders encoders(leftPinA, leftPinB, rightPinA, rightPinB,
